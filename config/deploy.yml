@@ -1,0 +1,41 @@
+# Name of your application. Used to uniquely configure containers.
+service: ash_demo
+
+# Name of the container image.
+image: doabit/ash_demo
+
+ssh:
+  user: root # SSH user
+servers:
+  - 164.92.106.126
+
+registry:
+  server: registry.cn-hangzhou.aliyuncs.com
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+env:
+  clear:
+    PORT: 3000
+  secret:
+    - SECRET_KEY_BASE
+    - DATABASE_URL
+    - PHX_HOST
+builder:
+  multiarch: false # Build for multiple architectures.
+
+accessories:
+  db:
+    image: postgres:15.4
+    host: 164.92.106.126
+    env:
+      clear:
+        POSTGRES_USER: postgres
+      secret:
+        - POSTGRES_PASSWORD
+    port: 5432
+    files:
+      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - ./postgres-data:/var/lib/postgresql/data
